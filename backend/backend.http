@@ -1,6 +1,94 @@
 @backend_HostAddress = http://localhost:5076
+@contentType = application/json
 
-GET {{backend_HostAddress}}/weatherforecast/
-Accept: application/json
+### Get all departments
+GET {{backend_HostAddress}}/api/department
+Accept: {{contentType}}
+
+### Get department by ID
+GET {{backend_HostAddress}}/api/department/1
+Accept: {{contentType}}
+
+### Create new department
+POST {{backend_HostAddress}}/api/department
+Content-Type: {{contentType}}
+
+{
+  "departmentCode": "HR",
+  "departmentName": "Human Resources"
+}
+
+### Update department
+PUT {{backend_HostAddress}}/api/department/1
+Content-Type: {{contentType}}
+
+{
+  "departmentId": 1,
+  "departmentCode": "HR",
+  "departmentName": "Human Resources"
+}
+
+### Delete department
+DELETE {{backend_HostAddress}}/api/department/1
+Accept: {{contentType}}
 
 ###
+
+### Get all employees
+GET {{backend_HostAddress}}/api/employee
+Accept: {{contentType}}
+
+### Get employee by ID
+GET {{backend_HostAddress}}/api/employee/1
+Accept: {{contentType}}
+
+### Get employees by department
+GET {{backend_HostAddress}}/api/employee/department/1
+Accept: {{contentType}}
+
+### Create new employee
+POST {{backend_HostAddress}}/api/employee
+Content-Type: {{contentType}}
+
+{
+  "firstName": "John",
+  "lastName": "Doe",
+  "emailAddress": "john.doe@example.com",
+  "dateOfBirth": "1990-01-15",
+  "age": 34,
+  "salary": 75000,
+  "departmentId": 1
+}
+
+### Update employee
+PUT {{backend_HostAddress}}/api/employee/1
+Content-Type: {{contentType}}
+
+{
+  "employeeId": 1,
+  "firstName": "John",
+  "lastName": "Doe",
+  "emailAddress": "john.doe@example.com",
+  "dateOfBirth": "1990-01-15",
+  "age": 34,
+  "salary": 75000,
+  "departmentId": 1
+}
+
+### Delete employee
+DELETE {{backend_HostAddress}}/api/employee/1
+Accept: {{contentType}}
+
+###
+
+### Test database connection
+GET {{backend_HostAddress}}/api/database/test-connection
+Accept: {{contentType}}
+
+### Get database tables
+GET {{backend_HostAddress}}/api/database/get-tables
+Accept: {{contentType}}
+
+### Get database info
+GET {{backend_HostAddress}}/api/database/get-info
+Accept: {{contentType}}
