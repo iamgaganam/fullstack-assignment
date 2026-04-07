@@ -1,4 +1,4 @@
-@backend_HostAddress = http://localhost:5076
+@backend_HostAddress = http://localhost:5000
 @contentType = application/json
 
 ### Get all departments
@@ -51,9 +51,9 @@ POST {{backend_HostAddress}}/api/employee
 Content-Type: {{contentType}}
 
 {
-  "firstName": "John",
-  "lastName": "Doe",
-  "emailAddress": "john.doe@example.com",
+  "firstName": "Kumara",
+  "lastName": "Silva",
+  "emailAddress": "kumar@example.com",
   "dateOfBirth": "1990-01-15",
   "age": 34,
   "salary": 75000,
@@ -66,9 +66,9 @@ Content-Type: {{contentType}}
 
 {
   "employeeId": 1,
-  "firstName": "John",
-  "lastName": "Doe",
-  "emailAddress": "john.doe@example.com",
+  "firstName": "Hemal",
+  "lastName": "Silva",
+  "emailAddress": "hemals@example.com",
   "dateOfBirth": "1990-01-15",
   "age": 34,
   "salary": 75000,

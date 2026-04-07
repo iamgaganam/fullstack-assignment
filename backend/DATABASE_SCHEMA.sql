@@ -1,7 +1,6 @@
 -- =====================================================
--- COMPANY MANAGEMENT SYSTEM DATABASE SCHEMA & SAMPLE DATA
+-- COMPANY MANAGEMENT SYSTEM DATABASE & SAMPLE DATA
 -- Database: CompanyDB
--- Created: 2026-04-07
 -- =====================================================
 
 -- ===== CREATE DEPARTMENT TABLE =====
@@ -31,7 +30,7 @@ CREATE TABLE [dbo].[Employee]
         REFERENCES [dbo].[Department]([DepartmentId]) ON DELETE CASCADE
 );
 
--- ===== CREATE INDEXES FOR BETTER PERFORMANCE =====
+-- ===== CREATE INDEXES FOR GOOD PERFORMANCE =====
 CREATE INDEX [IX_Employee_DepartmentId] ON [dbo].[Employee]([DepartmentId]);
 CREATE INDEX [IX_Employee_EmailAddress] ON [dbo].[Employee]([EmailAddress]);
 
@@ -51,7 +50,7 @@ VALUES
 GO
 
 -- =====================================================
--- SAMPLE DATA - EMPLOYEES (Sri Lankan Names)
+-- SAMPLE DATA - EMPLOYEE NAMES
 -- =====================================================
 INSERT INTO [dbo].[Employee] (FirstName, LastName, EmailAddress, DateOfBirth, Age, Salary, DepartmentId, CreatedDate, ModifiedDate)
 VALUES
@@ -75,7 +74,7 @@ GO
 -- =====================================================
 -- VERIFICATION QUERIES
 -- =====================================================
--- Uncomment to verify data insertion:
+-- to verify data insertion:
 -- SELECT * FROM [dbo].[Department];
 -- SELECT * FROM [dbo].[Employee];
 -- SELECT e.FirstName, e.LastName, e.EmailAddress, d.DepartmentName, e.Salary 
