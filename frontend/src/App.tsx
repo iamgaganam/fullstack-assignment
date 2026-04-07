@@ -1,26 +1,62 @@
+import { useEffect, useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { Home } from "./pages/Home";
-import { DepartmentManagement } from "./pages/DepartmentManagement";
-import { EmployeeManagement } from "./pages/EmployeeManagement";
 import { Navbar } from "./components/Navbar";
 import { Footer } from "./components/Footer";
+import { Dashboard } from "./pages/Dashboard";
+import { DepartmentPage } from "./pages/DepartmentPage";
+import { EmployeePage } from "./pages/EmployeePage";
+import "./App.css";
+
+function AppContent() {
+  const [isDark, setIsDark] = useState(() => {
+    const saved = localStorage.getItem("theme");
+    if (saved) {
+      return saved === "dark";
+    }
+    return window.matchMedia("(prefers-color-scheme: dark)").matches;
+  });
+
+  useEffect(() => {
+    localStorage.setItem("theme", isDark ? "dark" : "light");
+    if (isDark) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+  }, [isDark]);
+
+  const toggleDarkMode = () => {
+    setIsDark(!isDark);
+  };
+
+  return (
+    <div
+      className={`flex flex-col min-h-screen transition-colors ${
+        isDark ? "bg-slate-950 text-white" : "bg-white text-slate-900"
+      }`}
+    >
+      <Navbar isDark={isDark} onToggleDarkMode={toggleDarkMode} />
+
+      <main className="flex-1">
+        <Routes>
+          <Route path="/" element={<Dashboard isDark={isDark} />} />
+          <Route
+            path="/departments"
+            element={<DepartmentPage isDark={isDark} />}
+          />
+          <Route path="/employees" element={<EmployeePage isDark={isDark} />} />
+        </Routes>
+      </main>
+
+      <Footer isDark={isDark} />
+    </div>
+  );
+}
 
 function App() {
   return (
     <Router>
-      <div className="flex flex-col min-h-screen bg-white dark:bg-slate-950">
-        <Navbar />
-
-        <main className="flex-1 w-full">
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/departments" element={<DepartmentManagement />} />
-            <Route path="/employees" element={<EmployeeManagement />} />
-          </Routes>
-        </main>
-
-        <Footer />
-      </div>
+      <AppContent />
     </Router>
   );
 }
