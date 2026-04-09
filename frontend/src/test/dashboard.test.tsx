@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, vi, afterEach } from "vitest";
-import { render, screen, waitFor } from "@testing-library/react";
+import { render, screen, waitFor, act } from "@testing-library/react";
 import { BrowserRouter } from "react-router-dom";
 import { Dashboard } from "@/pages/Dashboard";
 import * as api from "@/api";
@@ -74,11 +74,16 @@ describe("Dashboard Component", () => {
     );
   };
 
-  it("should render dashboard with page content", () => {
+  it("should render dashboard with page content", async () => {
     mockDepartmentAPI.getAll = vi.fn().mockResolvedValue([]);
     mockEmployeeAPI.getAll = vi.fn().mockResolvedValue([]);
 
     renderDashboard();
+
+    // Wait for async operations to complete
+    await waitFor(() => {
+      expect(mockDepartmentAPI.getAll).toHaveBeenCalled();
+    });
 
     // Should render the page title
     expect(screen.getByText(/Your workforce/i)).toBeTruthy();
@@ -96,30 +101,45 @@ describe("Dashboard Component", () => {
     });
   });
 
-  it("should display navigation links", () => {
+  it("should display navigation links", async () => {
     mockDepartmentAPI.getAll = vi.fn().mockResolvedValue([]);
     mockEmployeeAPI.getAll = vi.fn().mockResolvedValue([]);
 
     renderDashboard();
+
+    // Wait for async operations to complete
+    await waitFor(() => {
+      expect(mockDepartmentAPI.getAll).toHaveBeenCalled();
+    });
 
     expect(screen.getByText(/Manage employees/i)).toBeTruthy();
     expect(screen.getByText(/View departments/i)).toBeTruthy();
   });
 
-  it("should display recent activity section", () => {
+  it("should display recent activity section", async () => {
     mockDepartmentAPI.getAll = vi.fn().mockResolvedValue([]);
     mockEmployeeAPI.getAll = vi.fn().mockResolvedValue([]);
 
     renderDashboard();
+
+    // Wait for async operations to complete
+    await waitFor(() => {
+      expect(mockDepartmentAPI.getAll).toHaveBeenCalled();
+    });
 
     expect(screen.getByText(/Recent activity/i)).toBeTruthy();
   });
 
-  it("should display quick action cards", () => {
+  it("should display quick action cards", async () => {
     mockDepartmentAPI.getAll = vi.fn().mockResolvedValue([]);
     mockEmployeeAPI.getAll = vi.fn().mockResolvedValue([]);
 
     renderDashboard();
+
+    // Wait for async operations to complete
+    await waitFor(() => {
+      expect(mockDepartmentAPI.getAll).toHaveBeenCalled();
+    });
 
     expect(screen.getByText(/Jump into your workspace/i)).toBeTruthy();
     expect(screen.getByText(/Department management/i)).toBeTruthy();
@@ -134,6 +154,11 @@ describe("Dashboard Component", () => {
       .mockRejectedValue(new Error("Failed to fetch employees"));
 
     renderDashboard();
+
+    // Wait for async operations to complete
+    await waitFor(() => {
+      expect(mockDepartmentAPI.getAll).toHaveBeenCalled();
+    });
 
     // Component should still render without crashing
     expect(screen.getByText(/Your workforce/i)).toBeTruthy();
