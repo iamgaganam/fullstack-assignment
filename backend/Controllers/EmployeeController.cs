@@ -12,7 +12,7 @@ namespace backend.Controllers
     [Route("api/[controller]")]
     public class EmployeeController : ControllerBase
     {
-        private readonly EmployeeService _employeeService;
+        private readonly backend.Interfaces.IEmployeeService _employeeService;
         private readonly ILogger<EmployeeController> _logger;
 
         /// <summary>
@@ -20,7 +20,7 @@ namespace backend.Controllers
         /// </summary>
         /// <param name="employeeService">The employee service for business logic.</param>
         /// <param name="logger">The logger for logging operations.</param>
-        public EmployeeController(EmployeeService employeeService, ILogger<EmployeeController> logger)
+        public EmployeeController(backend.Interfaces.IEmployeeService employeeService, ILogger<EmployeeController> logger)
         {
             _employeeService = employeeService;
             _logger = logger;

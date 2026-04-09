@@ -24,8 +24,8 @@ builder.Services.AddScoped<backend.Interfaces.IDepartmentRepository, backend.Dat
 builder.Services.AddScoped<backend.Interfaces.IEmployeeRepository, backend.Data.Repositories.EmployeeRepository>();
 
 // Add Business Logic Services
-builder.Services.AddScoped<backend.Services.DepartmentService>();
-builder.Services.AddScoped<backend.Services.EmployeeService>();
+builder.Services.AddScoped<backend.Interfaces.IDepartmentService, backend.Services.DepartmentService>();
+builder.Services.AddScoped<backend.Interfaces.IEmployeeService, backend.Services.EmployeeService>();
 
 var app = builder.Build();
 

@@ -12,7 +12,7 @@ namespace backend.Controllers
     [Route("api/[controller]")]
     public class DepartmentController : ControllerBase
     {
-        private readonly DepartmentService _departmentService;
+        private readonly backend.Interfaces.IDepartmentService _departmentService;
         private readonly ILogger<DepartmentController> _logger;
 
         /// <summary>
@@ -20,7 +20,7 @@ namespace backend.Controllers
         /// </summary>
         /// <param name="departmentService">The department service for business logic.</param>
         /// <param name="logger">The logger for logging operations.</param>
-        public DepartmentController(DepartmentService departmentService, ILogger<DepartmentController> logger)
+        public DepartmentController(backend.Interfaces.IDepartmentService departmentService, ILogger<DepartmentController> logger)
         {
             _departmentService = departmentService;
             _logger = logger;

@@ -3,7 +3,7 @@ using backend.Models;
 
 namespace backend.Services
 {
-    public class EmployeeService
+    public class EmployeeService : backend.Interfaces.IEmployeeService
     {
         private readonly IEmployeeRepository _employeeRepository;
         private readonly IDepartmentRepository _departmentRepository;

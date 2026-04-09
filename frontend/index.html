@@ -2,15 +2,13 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/png" href="/src/assets/logo.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Management System - Departments & Employees</title>
+    <title>NexusHR</title>
     <script>
-      // Prevent flash of wrong theme
+      // Set light theme as default
       const theme = localStorage.getItem("theme");
-      const isDark =
-        theme === "dark" ||
-        (!theme && window.matchMedia("(prefers-color-scheme: dark)").matches);
+      const isDark = theme === "dark";
       if (isDark) {
         document.documentElement.classList.add("dark");
       }

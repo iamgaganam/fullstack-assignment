@@ -3,7 +3,7 @@ using backend.Models;
 
 namespace backend.Services
 {
-    public class DepartmentService
+    public class DepartmentService : backend.Interfaces.IDepartmentService
     {
         private readonly IDepartmentRepository _departmentRepository;
         private readonly ILogger<DepartmentService> _logger;
