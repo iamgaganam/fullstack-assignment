@@ -5,11 +5,8 @@ import type { Department, DepartmentFormData, PageProps } from "@/types";
 import {
   Buildings,
   CalendarBlank,
-  MagnifyingGlass,
   PencilSimple,
-  Plus,
   Trash,
-  X,
   CheckCircle,
 } from "@phosphor-icons/react";
 import { Toaster, toast } from "sonner";
@@ -32,8 +29,6 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Skeleton } from "@/components/ui/skeleton";
 import {
   Table,
   TableBody,
@@ -42,16 +37,13 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
+
+import { PageHeader } from "@/components/PageHeader";
+import { SearchBar } from "@/components/SearchBar";
+import { EmptyState } from "@/components/EmptyState";
+import { ConfirmDeleteDialog } from "@/components/ConfirmDeleteDialog";
+import { LoadingState } from "@/components/LoadingState";
+import { FormField } from "@/components/FormField";
 
 type DepartmentPageProps = PageProps;
 
@@ -201,95 +193,31 @@ export function DepartmentPage({ isDark }: DepartmentPageProps) {
       }`}
     >
       {/* ── HEADER ──────────────────────────────────────────── */}
-      <section className="relative overflow-hidden animate-slide-up">
-        <div className="pointer-events-none absolute inset-0">
-          <div className="absolute -left-20 top-0 h-80 w-80 rounded-full bg-blue-600/10 blur-3xl" />
-          <div className="absolute -right-20 top-16 h-72 w-72 rounded-full bg-violet-600/10 blur-3xl" />
-          {isDark && (
-            <div
-              className="absolute inset-0 opacity-[0.025]"
-              style={{
-                backgroundImage:
-                  "linear-gradient(to right,#fff 1px,transparent 1px),linear-gradient(to bottom,#fff 1px,transparent 1px)",
-                backgroundSize: "48px 48px",
-              }}
-            />
-          )}
-        </div>
-
-        <div className="relative w-full px-4 pb-10 pt-12 sm:px-6 lg:px-10 lg:pt-14 2xl:px-20">
-          <div className="flex flex-col gap-6 xl:flex-row xl:items-end xl:justify-between">
-            <div className="max-w-2xl">
-              <div
-                className={`mb-5 inline-flex items-center gap-2 rounded-full border px-4 py-1.5 text-sm ${
-                  isDark
-                    ? "border-blue-500/20 bg-blue-500/8 text-blue-300"
-                    : "border-blue-200 bg-blue-50 text-blue-700"
-                }`}
-              >
-                <Buildings size={14} weight="fill" />
-                <span className="font-medium">Department Workspace</span>
-              </div>
-
-              <h1
-                className={`text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight leading-[1.1] ${heading}`}
-              >
-                Manage departments
-                <br />
-                <span className="bg-gradient-to-r from-blue-500 via-indigo-500 to-violet-500 bg-clip-text text-transparent">
-                  with clarity.
-                </span>
-              </h1>
-
-              <p className={`mt-4 max-w-xl text-base leading-8 ${body}`}>
-                Create, edit, and organize your business units in a clean,
-                focused workspace. Keep your org structure sharp.
-              </p>
-            </div>
-
-            <Button
-              onClick={() => {
-                setEditingId(null);
-                setErrors({});
-                setFormData({ departmentCode: "", departmentName: "" });
-                setShowModal(true);
-              }}
-              className="rounded-full px-6 h-11 gap-2 bg-gradient-to-r from-blue-600 to-violet-600 hover:from-blue-500 hover:to-violet-500 border-0 shadow-lg shadow-blue-500/20 text-white font-medium"
-            >
-              <Plus size={17} weight="bold" />
-              Add department
-            </Button>
-          </div>
-        </div>
-      </section>
+      <PageHeader
+        isDark={isDark}
+        icon={<Buildings size={14} weight="fill" />}
+        badge="Department Workspace"
+        title="Manage departments"
+        subtitle="with clarity."
+        onAddClick={() => {
+          setEditingId(null);
+          setErrors({});
+          setFormData({ departmentCode: "", departmentName: "" });
+          setShowModal(true);
+        }}
+        addButtonLabel="Add department"
+      />
 
       {/* ── SEARCH + STATS BAR ────────────────────────────── */}
       <section className="w-full px-3 sm:px-4 md:px-6 lg:px-10 pb-6 sm:pb-8 pt-4 sm:pt-6 2xl:px-20">
         <div className="flex flex-col gap-3 sm:gap-4 sm:flex-row sm:items-stretch">
           {/* Search */}
-          <div
-            className={`flex-1 flex items-center gap-2 sm:gap-3 rounded-lg sm:rounded-2xl border px-3 sm:px-4 py-2.5 sm:py-3 ${card}`}
-          >
-            <MagnifyingGlass size={15} className={muted} />
-            <input
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              placeholder="Search by code or name…"
-              className={`flex-1 bg-transparent text-xs sm:text-sm outline-none ${
-                isDark
-                  ? "text-white placeholder:text-slate-600"
-                  : "text-slate-900 placeholder:text-slate-400"
-              }`}
-            />
-            {searchTerm && (
-              <button
-                onClick={() => setSearchTerm("")}
-                className={`rounded-full p-0.5 ${isDark ? "text-slate-500 hover:text-slate-300" : "text-slate-400 hover:text-slate-600"}`}
-              >
-                <X size={13} />
-              </button>
-            )}
-          </div>
+          <SearchBar
+            isDark={isDark}
+            searchTerm={searchTerm}
+            onSearchChange={setSearchTerm}
+            placeholder="Search by code or name…"
+          />
 
           {/* Mini stats */}
           <div className="flex gap-2 sm:gap-3">
@@ -308,11 +236,7 @@ export function DepartmentPage({ isDark }: DepartmentPageProps) {
       {/* ── TABLE ─────────────────────────────────────────── */}
       <section className="w-full px-3 sm:px-4 md:px-6 lg:px-10 pb-16 md:pb-20 2xl:px-20">
         <Card
-          className={`overflow-hidden rounded-xl sm:rounded-2xl border ${
-            isDark
-              ? "border-white/8 bg-white/3"
-              : "border-slate-200 bg-white shadow-sm"
-          }`}
+          className={`overflow-hidden rounded-xl sm:rounded-2xl border ${card}`}
         >
           <CardHeader
             className={`pb-3 sm:pb-4 px-4 sm:px-6 border-b ${isDark ? "border-white/8" : "border-slate-100"}`}
@@ -345,55 +269,22 @@ export function DepartmentPage({ isDark }: DepartmentPageProps) {
 
           <CardContent className="p-0">
             {isLoading ? (
-              <div className="space-y-2 sm:space-y-3 p-3 sm:p-6">
-                {Array.from({ length: 6 }).map((_, i) => (
-                  <Skeleton
-                    key={i}
-                    className={`h-12 sm:h-14 w-full rounded-lg sm:rounded-xl ${isDark ? "bg-white/5" : ""}`}
-                  />
-                ))}
-              </div>
+              <LoadingState isDark={isDark} count={6} />
             ) : filteredDepartments.length === 0 ? (
-              <div className="flex flex-col items-center justify-center px-4 sm:px-6 py-16 sm:py-24 text-center">
-                <div
-                  className={`mb-3 sm:mb-5 flex h-12 sm:h-16 w-12 sm:w-16 items-center justify-center rounded-xl sm:rounded-2xl ${
-                    isDark ? "bg-white/5" : "bg-slate-100"
-                  }`}
-                >
-                  <Buildings size={24} className={muted} weight="fill" />
-                </div>
-                <h3 className={`text-base sm:text-lg font-semibold ${heading}`}>
-                  No departments found
-                </h3>
-                <p
-                  className={`mt-2 max-w-sm text-xs sm:text-sm leading-7 ${body}`}
-                >
-                  {searchTerm
+              <EmptyState
+                isDark={isDark}
+                icon={<Buildings size={24} weight="fill" />}
+                title="No departments found"
+                message={
+                  searchTerm
                     ? `No results for "${searchTerm}". Try a different search term.`
-                    : "Create your first department to start organizing your workforce."}
-                </p>
-                {!searchTerm && (
-                  <Button
-                    onClick={() => setShowModal(true)}
-                    className="mt-4 sm:mt-6 rounded-full px-4 sm:px-6 h-9 sm:h-11 gap-2 bg-gradient-to-r from-blue-600 to-violet-600 border-0 text-white text-sm"
-                  >
-                    <Plus size={16} weight="bold" />
-                    Add department
-                  </Button>
-                )}
-                {searchTerm && (
-                  <Button
-                    variant="outline"
-                    onClick={() => setSearchTerm("")}
-                    className={`mt-3 sm:mt-5 rounded-full px-4 sm:px-5 h-9 sm:h-11 gap-2 text-sm ${
-                      isDark ? "border-white/10 bg-white/5 text-white" : ""
-                    }`}
-                  >
-                    <X size={14} />
-                    Clear search
-                  </Button>
-                )}
-              </div>
+                    : "Create your first department to start organizing your workforce."
+                }
+                searchTerm={searchTerm}
+                onAddClick={() => setShowModal(true)}
+                onClearSearch={() => setSearchTerm("")}
+                addButtonLabel="Add department"
+              />
             ) : (
               <div className="overflow-x-auto">
                 <Table>
@@ -562,13 +453,11 @@ export function DepartmentPage({ isDark }: DepartmentPageProps) {
           </DialogHeader>
 
           <div className="grid gap-5 px-6 py-5">
-            <div className="grid gap-2.5">
-              <Label
-                htmlFor="departmentCode"
-                className={`text-sm font-medium ${heading}`}
-              >
-                Department code
-              </Label>
+            <FormField
+              label="Department code"
+              error={errors.departmentCode}
+              isDark={isDark}
+            >
               <Input
                 id="departmentCode"
                 maxLength={10}
@@ -580,26 +469,15 @@ export function DepartmentPage({ isDark }: DepartmentPageProps) {
                     departmentCode: e.target.value.toUpperCase(),
                   }))
                 }
-                className={`h-11 rounded-xl font-mono uppercase tracking-wider ${
-                  errors.departmentCode
-                    ? "border-red-500 focus-visible:ring-red-500"
-                    : ""
-                } ${inputCls}`}
+                className={`h-11 rounded-xl font-mono uppercase tracking-wider ${inputCls}`}
               />
-              {errors.departmentCode && (
-                <p className="text-xs text-red-500 flex items-center gap-1">
-                  <X size={12} /> {errors.departmentCode}
-                </p>
-              )}
-            </div>
+            </FormField>
 
-            <div className="grid gap-2.5">
-              <Label
-                htmlFor="departmentName"
-                className={`text-sm font-medium ${heading}`}
-              >
-                Department name
-              </Label>
+            <FormField
+              label="Department name"
+              error={errors.departmentName}
+              isDark={isDark}
+            >
               <Input
                 id="departmentName"
                 placeholder="e.g. Human Resources"
@@ -610,18 +488,9 @@ export function DepartmentPage({ isDark }: DepartmentPageProps) {
                     departmentName: e.target.value,
                   }))
                 }
-                className={`h-11 rounded-xl ${
-                  errors.departmentName
-                    ? "border-red-500 focus-visible:ring-red-500"
-                    : ""
-                } ${inputCls}`}
+                className={`h-11 rounded-xl ${inputCls}`}
               />
-              {errors.departmentName && (
-                <p className="text-xs text-red-500 flex items-center gap-1">
-                  <X size={12} /> {errors.departmentName}
-                </p>
-              )}
-            </div>
+            </FormField>
           </div>
 
           <DialogFooter
@@ -661,70 +530,13 @@ export function DepartmentPage({ isDark }: DepartmentPageProps) {
       </Dialog>
 
       {/* ── DELETE DIALOG ─────────────────────────────────── */}
-      <AlertDialog
-        open={!!deleteTarget}
-        onOpenChange={(open) => {
-          if (!open) setDeleteTarget(null);
-        }}
-      >
-        <AlertDialogContent
-          className={`overflow-hidden rounded-[28px] p-0 shadow-2xl sm:max-w-[28rem] ${
-            isDark
-              ? "border-white/10 bg-slate-950 text-white"
-              : "border-slate-200 bg-white"
-          }`}
-        >
-          <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-red-500/50 to-transparent" />
-          <AlertDialogHeader
-            className={`px-6 py-6 text-center ${
-              isDark ? "border-white/10" : "border-slate-100"
-            }`}
-          >
-            <div
-              className={`mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-2xl shadow-sm ${
-                isDark
-                  ? "bg-red-500/10 ring-1 ring-red-500/15"
-                  : "bg-red-50 ring-1 ring-red-100"
-              }`}
-            >
-              <Trash size={20} className="text-red-500" weight="fill" />
-            </div>
-            <AlertDialogTitle
-              className={`text-center text-xl font-bold tracking-tight ${heading}`}
-            >
-              Delete department?
-            </AlertDialogTitle>
-            <AlertDialogDescription
-              className={`mx-auto max-w-sm text-center text-sm leading-7 ${body}`}
-            >
-              This will permanently remove{" "}
-              <span className={`font-semibold ${heading}`}>
-                {deleteTarget?.departmentName}
-              </span>
-              . This action cannot be undone.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter
-            className={`gap-2.5 p-5 ${isDark ? "border-white/10" : "border-slate-100"}`}
-          >
-            <AlertDialogCancel
-              className={`h-10 flex-1 rounded-full px-5 text-sm font-medium ${
-                isDark
-                  ? "border-white/10 bg-white/5 text-white hover:bg-white/10"
-                  : "border-slate-200 bg-white text-slate-700 hover:bg-slate-50"
-              }`}
-            >
-              Cancel
-            </AlertDialogCancel>
-            <AlertDialogAction
-              onClick={handleDelete}
-              className="h-10 flex-1 rounded-full border-0 bg-red-600 px-5 text-sm font-medium text-white shadow-md shadow-red-500/20 hover:bg-red-700"
-            >
-              Delete department
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      <ConfirmDeleteDialog
+        isDark={isDark}
+        isOpen={!!deleteTarget}
+        itemName={deleteTarget?.departmentName || ""}
+        onConfirm={handleDelete}
+        onCancel={() => setDeleteTarget(null)}
+      />
 
       <Toaster position="top-right" theme={isDark ? "dark" : "light"} />
     </main>

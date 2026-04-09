@@ -1,6 +1,5 @@
-import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useLocation } from "react-router-dom";
-import { createPortal } from "react-dom";
 import { employeeAPI, departmentAPI } from "@/api";
 import type {
   Employee,
@@ -9,18 +8,12 @@ import type {
   PageProps,
 } from "@/types";
 import {
-  CalendarBlank,
-  CaretLeft,
-  CaretRight,
   Briefcase,
   CurrencyDollar,
   EnvelopeSimple,
-  MagnifyingGlass,
   PencilSimple,
-  Plus,
   Trash,
   Users,
-  X,
   CheckCircle,
   SquaresFour,
 } from "@phosphor-icons/react";
@@ -44,8 +37,6 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Skeleton } from "@/components/ui/skeleton";
 import {
   Select,
   SelectContent,
@@ -61,16 +52,14 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
+
+import { PageHeader } from "@/components/PageHeader";
+import { SearchBar } from "@/components/SearchBar";
+import { EmptyState } from "@/components/EmptyState";
+import { ConfirmDeleteDialog } from "@/components/ConfirmDeleteDialog";
+import { LoadingState } from "@/components/LoadingState";
+import { FormField } from "@/components/FormField";
+import { DatePickerField } from "@/components/DatePickerField";
 
 type EmployeePageProps = PageProps;
 
@@ -321,104 +310,40 @@ export function EmployeePage({ isDark }: EmployeePageProps) {
       }`}
     >
       {/* ── HEADER ───────────────────────────────────────────── */}
-      <section className="relative overflow-hidden animate-slide-up">
-        <div className="pointer-events-none absolute inset-0">
-          <div className="absolute -left-20 top-0 h-80 w-80 rounded-full bg-blue-600/10 blur-3xl" />
-          <div className="absolute -right-20 top-16 h-72 w-72 rounded-full bg-violet-600/10 blur-3xl" />
-          {isDark && (
-            <div
-              className="absolute inset-0 opacity-[0.025]"
-              style={{
-                backgroundImage:
-                  "linear-gradient(to right,#fff 1px,transparent 1px),linear-gradient(to bottom,#fff 1px,transparent 1px)",
-                backgroundSize: "48px 48px",
-              }}
-            />
-          )}
-        </div>
-
-        <div className="relative w-full px-4 pb-10 pt-12 sm:px-6 lg:px-10 lg:pt-14 2xl:px-20">
-          <div className="flex flex-col gap-6 xl:flex-row xl:items-end xl:justify-between">
-            <div className="max-w-2xl">
-              <div
-                className={`mb-5 inline-flex items-center gap-2 rounded-full border px-4 py-1.5 text-sm ${
-                  isDark
-                    ? "border-blue-500/20 bg-blue-500/8 text-blue-300"
-                    : "border-blue-200 bg-blue-50 text-blue-700"
-                }`}
-              >
-                <Users size={14} weight="fill" />
-                <span className="font-medium">Employee Workspace</span>
-              </div>
-
-              <h1
-                className={`text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl leading-[1.1] ${heading}`}
-              >
-                Manage your workforce
-                <br />
-                <span className="bg-gradient-to-r from-blue-500 via-indigo-500 to-violet-500 bg-clip-text text-transparent">
-                  in one place.
-                </span>
-              </h1>
-
-              <p className={`mt-4 max-w-xl text-base leading-8 ${body}`}>
-                Add, edit, and track employee records, salaries, and department
-                assignments — all from a premium, focused interface.
-              </p>
-            </div>
-
-            <Button
-              onClick={() => {
-                setEditingId(null);
-                setErrors({});
-                setFormData({
-                  firstName: "",
-                  lastName: "",
-                  emailAddress: "",
-                  dateOfBirth: "",
-                  salary: 0,
-                  departmentId: 0,
-                });
-                setShowModal(true);
-              }}
-              className="rounded-full px-6 h-11 gap-2 bg-gradient-to-r from-blue-600 to-violet-600 hover:from-blue-500 hover:to-violet-500 border-0 shadow-lg shadow-blue-500/20 text-white font-medium"
-            >
-              <Plus size={17} weight="bold" />
-              Add employee
-            </Button>
-          </div>
-        </div>
-      </section>
+      <PageHeader
+        isDark={isDark}
+        icon={<Users size={14} weight="fill" />}
+        badge="Employee Workspace"
+        title="Manage your workforce"
+        subtitle="in one place."
+        onAddClick={() => {
+          setEditingId(null);
+          setErrors({});
+          setFormData({
+            firstName: "",
+            lastName: "",
+            emailAddress: "",
+            dateOfBirth: "",
+            salary: 0,
+            departmentId: 0,
+          });
+          setShowModal(true);
+        }}
+        addButtonLabel="Add employee"
+      />
 
       {/* ── SEARCH + QUICK STATS ─────────────────────────────── */}
       <section className="w-full px-4 pb-6 sm:px-6 lg:px-10 2xl:px-20 animate-slide-up animate-delay-100">
         {/* Search bar */}
-        <div
-          className={`flex items-center gap-3 rounded-2xl border px-4 py-3 mb-4 mt-3 sm:mt-4 ${card}`}
-        >
-          <MagnifyingGlass size={17} className={muted} />
-          <input
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            placeholder="Search by name or email…"
-            className={`flex-1 bg-transparent text-sm outline-none ${
-              isDark
-                ? "text-white placeholder:text-slate-600"
-                : "text-slate-900 placeholder:text-slate-400"
-            }`}
-          />
-          {searchTerm && (
-            <button
-              onClick={() => setSearchTerm("")}
-              className={`rounded-full p-0.5 ${isDark ? "text-slate-500 hover:text-slate-300" : "text-slate-400 hover:text-slate-600"}`}
-            >
-              <X size={14} />
-            </button>
-          )}
-        </div>
+        <SearchBar
+          isDark={isDark}
+          searchTerm={searchTerm}
+          onSearchChange={setSearchTerm}
+          placeholder="Search by name or email…"
+        />
 
         {/* Stats row */}
-        <div className="grid gap-3 sm:gap-4 md:gap-5 xs:grid-cols-2 sm:grid-cols-2 xl:grid-cols-4">
+        <div className="grid gap-3 sm:gap-4 md:gap-5 xs:grid-cols-2 sm:grid-cols-2 xl:grid-cols-4 mt-4">
           {[
             {
               label: "Total employees",
@@ -533,49 +458,22 @@ export function EmployeePage({ isDark }: EmployeePageProps) {
 
           <CardContent className="p-0">
             {isLoading ? (
-              <div className="space-y-3 p-6">
-                {Array.from({ length: 7 }).map((_, i) => (
-                  <Skeleton
-                    key={i}
-                    className={`h-16 w-full rounded-xl ${isDark ? "bg-white/5" : ""}`}
-                  />
-                ))}
-              </div>
+              <LoadingState isDark={isDark} count={7} variant="large" />
             ) : filteredEmployees.length === 0 ? (
-              <div className="flex flex-col items-center justify-center px-6 py-24 text-center">
-                <div
-                  className={`mb-5 flex h-16 w-16 items-center justify-center rounded-2xl ${isDark ? "bg-white/5" : "bg-slate-100"}`}
-                >
-                  <Users size={28} className={muted} weight="fill" />
-                </div>
-                <h3 className={`text-lg font-semibold ${heading}`}>
-                  No employees found
-                </h3>
-                <p className={`mt-2 max-w-sm text-sm leading-7 ${body}`}>
-                  {searchTerm
+              <EmptyState
+                isDark={isDark}
+                icon={<Users size={28} weight="fill" />}
+                title="No employees found"
+                message={
+                  searchTerm
                     ? `No results for "${searchTerm}". Try a different search.`
-                    : "Add your first employee to start building your directory."}
-                </p>
-                {!searchTerm && (
-                  <Button
-                    onClick={() => setShowModal(true)}
-                    className="mt-6 rounded-full px-6 gap-2 bg-gradient-to-r from-violet-600 to-fuchsia-600 border-0 text-white"
-                  >
-                    <Plus size={17} weight="bold" />
-                    Add employee
-                  </Button>
-                )}
-                {searchTerm && (
-                  <Button
-                    variant="outline"
-                    onClick={() => setSearchTerm("")}
-                    className={`mt-5 rounded-full px-5 gap-2 ${isDark ? "border-white/10 bg-white/5 text-white" : ""}`}
-                  >
-                    <X size={14} />
-                    Clear search
-                  </Button>
-                )}
-              </div>
+                    : "Add your first employee to start building your directory."
+                }
+                searchTerm={searchTerm}
+                onAddClick={() => setShowModal(true)}
+                onClearSearch={() => setSearchTerm("")}
+                addButtonLabel="Add employee"
+              />
             ) : (
               <div className="overflow-x-auto">
                 <Table>
@@ -758,7 +656,11 @@ export function EmployeePage({ isDark }: EmployeePageProps) {
           <div className="grid gap-5 px-6 py-5 sm:px-8 sm:py-6">
             {/* Name row */}
             <div className="grid gap-5 sm:grid-cols-2 sm:gap-6">
-              <FormField label="First name" error={errors.firstName}>
+              <FormField
+                label="First name"
+                error={errors.firstName}
+                isDark={isDark}
+              >
                 <Input
                   placeholder="John"
                   value={formData.firstName}
@@ -768,7 +670,11 @@ export function EmployeePage({ isDark }: EmployeePageProps) {
                   className={`h-11 rounded-xl ${errors.firstName ? "border-red-500" : ""} ${inputCls}`}
                 />
               </FormField>
-              <FormField label="Last name" error={errors.lastName}>
+              <FormField
+                label="Last name"
+                error={errors.lastName}
+                isDark={isDark}
+              >
                 <Input
                   placeholder="Doe"
                   value={formData.lastName}
@@ -781,7 +687,11 @@ export function EmployeePage({ isDark }: EmployeePageProps) {
             </div>
 
             {/* Email */}
-            <FormField label="Email address" error={errors.emailAddress}>
+            <FormField
+              label="Email address"
+              error={errors.emailAddress}
+              isDark={isDark}
+            >
               <div className="relative">
                 <EnvelopeSimple
                   size={15}
@@ -801,7 +711,11 @@ export function EmployeePage({ isDark }: EmployeePageProps) {
 
             {/* DOB + Age */}
             <div className="grid gap-5 sm:grid-cols-2 sm:gap-6">
-              <FormField label="Date of birth" error={errors.dateOfBirth}>
+              <FormField
+                label="Date of birth"
+                error={errors.dateOfBirth}
+                isDark={isDark}
+              >
                 <DatePickerField
                   isDark={isDark}
                   value={formData.dateOfBirth}
@@ -810,7 +724,7 @@ export function EmployeePage({ isDark }: EmployeePageProps) {
                   }
                 />
               </FormField>
-              <FormField label="Age (calculated)">
+              <FormField label="Age (calculated)" isDark={isDark}>
                 <Input
                   value={
                     formData.dateOfBirth
@@ -825,7 +739,11 @@ export function EmployeePage({ isDark }: EmployeePageProps) {
 
             {/* Salary + Department */}
             <div className="grid gap-5 sm:grid-cols-2 sm:gap-6">
-              <FormField label="Salary (USD)" error={errors.salary}>
+              <FormField
+                label="Salary (USD)"
+                error={errors.salary}
+                isDark={isDark}
+              >
                 <div className="relative">
                   <CurrencyDollar
                     size={15}
@@ -846,7 +764,11 @@ export function EmployeePage({ isDark }: EmployeePageProps) {
                   />
                 </div>
               </FormField>
-              <FormField label="Department" error={errors.departmentId}>
+              <FormField
+                label="Department"
+                error={errors.departmentId}
+                isDark={isDark}
+              >
                 <Select
                   value={
                     formData.departmentId
@@ -923,517 +845,19 @@ export function EmployeePage({ isDark }: EmployeePageProps) {
       </Dialog>
 
       {/* ── DELETE DIALOG ────────────────────────────────────── */}
-      <AlertDialog
-        open={!!deleteTarget}
-        onOpenChange={(open) => {
-          if (!open) setDeleteTarget(null);
-        }}
-      >
-        <AlertDialogContent
-          className={`overflow-hidden rounded-[28px] p-0 shadow-2xl sm:max-w-[28rem] ${
-            isDark
-              ? "border-white/10 bg-slate-950 text-white"
-              : "border-slate-200 bg-white"
-          }`}
-        >
-          <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-red-500/50 to-transparent" />
-          <AlertDialogHeader
-            className={`px-6 py-6 text-center ${
-              isDark ? "border-white/10" : "border-slate-100"
-            }`}
-          >
-            <div
-              className={`mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-2xl shadow-sm ${
-                isDark
-                  ? "bg-red-500/10 ring-1 ring-red-500/15"
-                  : "bg-red-50 ring-1 ring-red-100"
-              }`}
-            >
-              <Trash size={20} className="text-red-500" weight="fill" />
-            </div>
-            <AlertDialogTitle
-              className={`text-center text-xl font-bold tracking-tight ${heading}`}
-            >
-              Delete employee?
-            </AlertDialogTitle>
-            <AlertDialogDescription
-              className={`mx-auto max-w-sm text-center text-sm leading-7 ${body}`}
-            >
-              This will permanently remove{" "}
-              <span className={`font-semibold ${heading}`}>
-                {deleteTarget?.firstName} {deleteTarget?.lastName}
-              </span>
-              . This action cannot be undone.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter
-            className={`gap-2.5 p-5 ${
-              isDark ? "border-white/10" : "border-slate-100"
-            }`}
-          >
-            <AlertDialogCancel
-              className={`h-10 flex-1 rounded-full px-5 text-sm font-medium ${
-                isDark
-                  ? "border-white/10 bg-white/5 text-white hover:bg-white/10"
-                  : "border-slate-200 bg-white text-slate-700 hover:bg-slate-50"
-              }`}
-            >
-              Cancel
-            </AlertDialogCancel>
-            <AlertDialogAction
-              onClick={handleDelete}
-              className="h-10 flex-1 rounded-full border-0 bg-red-600 px-5 text-sm font-medium text-white shadow-md shadow-red-500/20 hover:bg-red-700"
-            >
-              Delete employee
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      <ConfirmDeleteDialog
+        isDark={isDark}
+        isOpen={!!deleteTarget}
+        itemName={
+          deleteTarget
+            ? `${deleteTarget.firstName} ${deleteTarget.lastName}`
+            : ""
+        }
+        onConfirm={handleDelete}
+        onCancel={() => setDeleteTarget(null)}
+      />
 
       <Toaster position="top-right" theme={isDark ? "dark" : "light"} />
     </main>
-  );
-}
-
-/* ── Shared form field wrapper ───────────────────────────── */
-const MONTH_LABELS = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
-];
-
-const WEEKDAY_LABELS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-
-function parseIsoDate(value: string) {
-  if (!value) return null;
-
-  const [year, month, day] = value.split("-").map(Number);
-  if (!year || !month || !day) return null;
-
-  const date = new Date(year, month - 1, day);
-  date.setHours(0, 0, 0, 0);
-  return Number.isNaN(date.getTime()) ? null : date;
-}
-
-function toIsoDate(date: Date) {
-  const year = date.getFullYear();
-  const month = `${date.getMonth() + 1}`.padStart(2, "0");
-  const day = `${date.getDate()}`.padStart(2, "0");
-  return `${year}-${month}-${day}`;
-}
-
-function formatDateDisplay(value: string) {
-  const date = parseIsoDate(value);
-  if (!date) return "mm/dd/yyyy";
-
-  const month = `${date.getMonth() + 1}`.padStart(2, "0");
-  const day = `${date.getDate()}`.padStart(2, "0");
-  const year = date.getFullYear();
-  return `${month}/${day}/${year}`;
-}
-
-function formatDateSummary(value: string) {
-  const date = parseIsoDate(value);
-  if (!date) return "No date selected";
-
-  return new Intl.DateTimeFormat("en-US", {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-  }).format(date);
-}
-
-function isSameDay(a: Date, b: Date) {
-  return (
-    a.getFullYear() === b.getFullYear() &&
-    a.getMonth() === b.getMonth() &&
-    a.getDate() === b.getDate()
-  );
-}
-
-function getCalendarDays(viewDate: Date) {
-  const monthStart = new Date(viewDate.getFullYear(), viewDate.getMonth(), 1);
-  monthStart.setHours(0, 0, 0, 0);
-
-  const calendarStart = new Date(monthStart);
-  calendarStart.setDate(monthStart.getDate() - monthStart.getDay());
-
-  return Array.from({ length: 42 }, (_, index) => {
-    const date = new Date(calendarStart);
-    date.setDate(calendarStart.getDate() + index);
-    date.setHours(0, 0, 0, 0);
-
-    return {
-      date,
-      inCurrentMonth: date.getMonth() === viewDate.getMonth(),
-    };
-  });
-}
-
-function DatePickerField({
-  value,
-  onChange,
-  isDark,
-}: {
-  value: string;
-  onChange: (value: string) => void;
-  isDark: boolean;
-}) {
-  const triggerRef = useRef<HTMLButtonElement | null>(null);
-  const panelRef = useRef<HTMLDivElement | null>(null);
-  const selectedDate = parseIsoDate(value);
-  const [isOpen, setIsOpen] = useState(false);
-  const [panelPosition, setPanelPosition] = useState<{
-    top: number;
-    left: number;
-    width: number;
-  } | null>(null);
-  const [viewDate, setViewDate] = useState(selectedDate ?? new Date());
-
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-
-  useEffect(() => {
-    // Sync viewDate with selectedDate when isOpen changes is correct; these are proper dependencies
-    if (!isOpen) return;
-    setViewDate(selectedDate ?? new Date());
-  }, [isOpen, selectedDate]);
-
-  useLayoutEffect(() => {
-    // Using useLayoutEffect for DOM positioning measurements is the correct React pattern
-    if (!isOpen || !triggerRef.current) {
-      setPanelPosition(null);
-      return;
-    }
-
-    const updatePosition = () => {
-      if (!triggerRef.current) return;
-      const rect = triggerRef.current.getBoundingClientRect();
-      const width = Math.max(rect.width, 320);
-      const left = Math.min(
-        Math.max(16, rect.left),
-        window.innerWidth - width - 16,
-      );
-
-      setPanelPosition({
-        top: rect.bottom + 8,
-        left,
-        width,
-      });
-    };
-
-    const handlePointerDown = (event: MouseEvent) => {
-      const target = event.target as Node;
-      if (
-        !panelRef.current?.contains(target) &&
-        !triggerRef.current?.contains(target)
-      ) {
-        setIsOpen(false);
-      }
-    };
-
-    const handleEscape = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        setIsOpen(false);
-      }
-    };
-
-    updatePosition();
-    window.addEventListener("resize", updatePosition);
-    window.addEventListener("scroll", updatePosition, true);
-    document.addEventListener("mousedown", handlePointerDown);
-    document.addEventListener("keydown", handleEscape);
-
-    return () => {
-      window.removeEventListener("resize", updatePosition);
-      window.removeEventListener("scroll", updatePosition, true);
-      document.removeEventListener("mousedown", handlePointerDown);
-      document.removeEventListener("keydown", handleEscape);
-    };
-  }, [isOpen]);
-
-  const years = Array.from(
-    { length: 81 },
-    (_, index) => today.getFullYear() - index,
-  );
-  const days = getCalendarDays(viewDate);
-
-  return (
-    <>
-      <button
-        type="button"
-        ref={triggerRef}
-        aria-haspopup="dialog"
-        aria-expanded={isOpen}
-        onClick={() => setIsOpen((open) => !open)}
-        className={`flex h-11 w-full items-center justify-between gap-3 rounded-xl border px-4 text-left transition-colors ${
-          isDark
-            ? `border-white/10 bg-white/5 text-white ${
-                isOpen
-                  ? "border-violet-500/40 ring-1 ring-violet-500/40"
-                  : "hover:bg-white/[0.07]"
-              }`
-            : `border-slate-200 bg-slate-50 text-slate-900 ${
-                isOpen
-                  ? "border-violet-400 ring-1 ring-violet-200"
-                  : "hover:bg-white"
-              }`
-        }`}
-      >
-        <span
-          className={`truncate ${
-            value
-              ? isDark
-                ? "text-white"
-                : "text-slate-900"
-              : isDark
-                ? "text-slate-500"
-                : "text-slate-400"
-          }`}
-        >
-          {formatDateDisplay(value)}
-        </span>
-        <span
-          className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full ${
-            isDark ? "bg-white/5 text-slate-400" : "bg-white text-slate-500"
-          }`}
-        >
-          <CalendarBlank size={16} />
-        </span>
-      </button>
-
-      {isOpen &&
-        panelPosition &&
-        typeof document !== "undefined" &&
-        createPortal(
-          <div
-            ref={panelRef}
-            style={{
-              position: "fixed",
-              top: panelPosition.top,
-              left: panelPosition.left,
-              width: panelPosition.width,
-            }}
-            className={`z-[80] overflow-hidden rounded-2xl border shadow-2xl ${
-              isDark
-                ? "border-white/10 bg-slate-950 text-white"
-                : "border-slate-200 bg-white text-slate-900"
-            }`}
-          >
-            <div
-              className={`flex items-center justify-between gap-3 border-b px-3 py-3 ${
-                isDark ? "border-white/10" : "border-slate-100"
-              }`}
-            >
-              <div className="flex items-center gap-2">
-                <button
-                  type="button"
-                  onClick={() =>
-                    setViewDate(
-                      new Date(
-                        viewDate.getFullYear(),
-                        viewDate.getMonth() - 1,
-                        1,
-                      ),
-                    )
-                  }
-                  className={`flex h-8 w-8 items-center justify-center rounded-full transition-colors ${
-                    isDark
-                      ? "bg-white/5 text-slate-300 hover:bg-white/10"
-                      : "bg-slate-100 text-slate-600 hover:bg-slate-200"
-                  }`}
-                >
-                  <CaretLeft size={14} weight="bold" />
-                </button>
-                <button
-                  type="button"
-                  onClick={() =>
-                    setViewDate(
-                      new Date(
-                        viewDate.getFullYear(),
-                        viewDate.getMonth() + 1,
-                        1,
-                      ),
-                    )
-                  }
-                  className={`flex h-8 w-8 items-center justify-center rounded-full transition-colors ${
-                    isDark
-                      ? "bg-white/5 text-slate-300 hover:bg-white/10"
-                      : "bg-slate-100 text-slate-600 hover:bg-slate-200"
-                  }`}
-                >
-                  <CaretRight size={14} weight="bold" />
-                </button>
-              </div>
-
-              <div className="flex items-center gap-2">
-                <select
-                  value={viewDate.getMonth()}
-                  onChange={(event) =>
-                    setViewDate(
-                      new Date(
-                        viewDate.getFullYear(),
-                        parseInt(event.target.value, 10),
-                        1,
-                      ),
-                    )
-                  }
-                  className={`h-9 rounded-xl border px-3 text-sm outline-none ${
-                    isDark
-                      ? "border-white/10 bg-white/5 text-white"
-                      : "border-slate-200 bg-slate-50 text-slate-900"
-                  }`}
-                >
-                  {MONTH_LABELS.map((month, index) => (
-                    <option key={month} value={index}>
-                      {month}
-                    </option>
-                  ))}
-                </select>
-                <select
-                  value={viewDate.getFullYear()}
-                  onChange={(event) =>
-                    setViewDate(
-                      new Date(
-                        parseInt(event.target.value, 10),
-                        viewDate.getMonth(),
-                        1,
-                      ),
-                    )
-                  }
-                  className={`h-9 rounded-xl border px-3 text-sm outline-none ${
-                    isDark
-                      ? "border-white/10 bg-white/5 text-white"
-                      : "border-slate-200 bg-slate-50 text-slate-900"
-                  }`}
-                >
-                  {years.map((year) => (
-                    <option key={year} value={year}>
-                      {year}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            </div>
-
-            <div className="px-3 py-3">
-              <div
-                className={`mb-2 grid grid-cols-7 gap-1 text-center text-[11px] font-semibold uppercase ${
-                  isDark ? "text-slate-500" : "text-slate-400"
-                }`}
-              >
-                {WEEKDAY_LABELS.map((label) => (
-                  <span key={label} className="py-1">
-                    {label}
-                  </span>
-                ))}
-              </div>
-
-              <div className="grid grid-cols-7 gap-1">
-                {days.map(({ date, inCurrentMonth }) => {
-                  const isSelected = selectedDate
-                    ? isSameDay(date, selectedDate)
-                    : false;
-                  const isToday = isSameDay(date, today);
-                  const isFuture = date > today;
-
-                  return (
-                    <button
-                      key={toIsoDate(date)}
-                      type="button"
-                      disabled={isFuture}
-                      onClick={() => {
-                        onChange(toIsoDate(date));
-                        setIsOpen(false);
-                      }}
-                      className={`flex h-10 items-center justify-center rounded-xl text-sm transition-colors ${
-                        isSelected
-                          ? "bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white shadow-md shadow-violet-500/20"
-                          : isDark
-                            ? "text-slate-200 hover:bg-white/6"
-                            : "text-slate-700 hover:bg-slate-100"
-                      } ${
-                        !inCurrentMonth && !isSelected
-                          ? isDark
-                            ? "text-slate-600"
-                            : "text-slate-400"
-                          : ""
-                      } ${
-                        isToday && !isSelected
-                          ? isDark
-                            ? "ring-1 ring-violet-500/40"
-                            : "ring-1 ring-violet-300"
-                          : ""
-                      } ${isFuture ? "cursor-not-allowed opacity-35 hover:bg-transparent" : ""}`}
-                    >
-                      {date.getDate()}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-
-            <div
-              className={`flex items-center justify-between gap-3 border-t px-3 py-3 ${
-                isDark ? "border-white/10" : "border-slate-100"
-              }`}
-            >
-              <button
-                type="button"
-                onClick={() => {
-                  onChange("");
-                  setIsOpen(false);
-                }}
-                className={`rounded-full px-3 py-1.5 text-sm font-medium transition-colors ${
-                  isDark
-                    ? "bg-white/5 text-slate-300 hover:bg-white/10"
-                    : "bg-slate-100 text-slate-600 hover:bg-slate-200"
-                }`}
-              >
-                Clear
-              </button>
-              <p
-                className={`text-sm ${
-                  isDark ? "text-slate-400" : "text-slate-500"
-                }`}
-              >
-                {formatDateSummary(value)}
-              </p>
-            </div>
-          </div>,
-          document.body,
-        )}
-    </>
-  );
-}
-
-function FormField({
-  label,
-  error,
-  children,
-}: {
-  label: string;
-  error?: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <div className="grid gap-2">
-      <Label className="text-sm font-medium">{label}</Label>
-      {children}
-      {error && (
-        <p className="text-xs text-red-500 flex items-center gap-1">
-          <X size={11} /> {error}
-        </p>
-      )}
-    </div>
   );
 }
