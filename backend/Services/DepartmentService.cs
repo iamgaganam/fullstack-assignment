@@ -39,7 +39,7 @@ namespace backend.Services
         {
             ValidateDepartment(department);
 
-            // Check if department code already exists
+            // Enforce unique code.
             var existing = await _departmentRepository.GetDepartmentByCodeAsync(department.DepartmentCode);
             if (existing != null)
                 throw new InvalidOperationException($"Department Code '{department.DepartmentCode}' already exists");
@@ -54,7 +54,7 @@ namespace backend.Services
             if (department.DepartmentId <= 0)
                 throw new ArgumentException("Department ID must be greater than 0");
 
-            // Check if new code already exists for another department
+            // Enforce unique code.
             var existing = await _departmentRepository.GetDepartmentByCodeAsync(department.DepartmentCode);
             if (existing != null && existing.DepartmentId != department.DepartmentId)
                 throw new InvalidOperationException($"Department Code '{department.DepartmentCode}' already exists");

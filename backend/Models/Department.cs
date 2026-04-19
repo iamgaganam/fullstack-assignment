@@ -6,27 +6,27 @@ namespace backend.Models
     public class Department
     {
         /// <summary>
-        /// Gets or sets the unique identifier for the department.
+        /// Department ID.
         /// </summary>
         public int DepartmentId { get; set; }
 
         /// <summary>
-        /// Gets or sets the department code (e.g., "HR", "IT", "SALES").
+        /// Department code.
         /// </summary>
         public string DepartmentCode { get; set; } = string.Empty;
 
         /// <summary>
-        /// Gets or sets the name of the department.
+        /// Department name.
         /// </summary>
         public string DepartmentName { get; set; } = string.Empty;
 
         /// <summary>
-        /// Gets or sets the creation date of the department record.
+        /// Created timestamp.
         /// </summary>
         public DateTime CreatedDate { get; set; }
 
         /// <summary>
-        /// Gets or sets the last modification date of the department record.
+        /// Updated timestamp.
         /// </summary>
         public DateTime ModifiedDate { get; set; }
     }

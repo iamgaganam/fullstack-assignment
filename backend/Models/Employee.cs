@@ -6,52 +6,52 @@ namespace backend.Models
     public class Employee
     {
         /// <summary>
-        /// Gets or sets the unique identifier for the employee.
+        /// Employee ID.
         /// </summary>
         public int EmployeeId { get; set; }
 
         /// <summary>
-        /// Gets or sets the first name of the employee.
+        /// First name.
         /// </summary>
         public string FirstName { get; set; } = string.Empty;
 
         /// <summary>
-        /// Gets or sets the last name of the employee.
+        /// Last name.
         /// </summary>
         public string LastName { get; set; } = string.Empty;
 
         /// <summary>
-        /// Gets or sets the email address of the employee.
+        /// Email.
         /// </summary>
         public string EmailAddress { get; set; } = string.Empty;
 
         /// <summary>
-        /// Gets or sets the date of birth of the employee.
+        /// Date of birth.
         /// </summary>
         public DateTime DateOfBirth { get; set; }
 
         /// <summary>
-        /// Gets or sets the age of the employee.
+        /// Age.
         /// </summary>
         public int Age { get; set; }
 
         /// <summary>
-        /// Gets or sets the salary of the employee.
+        /// Salary.
         /// </summary>
         public decimal Salary { get; set; }
 
         /// <summary>
-        /// Gets or sets the department ID that the employee belongs to.
+        /// Department ID.
         /// </summary>
         public int DepartmentId { get; set; }
 
         /// <summary>
-        /// Gets or sets the creation date of the employee record.
+        /// Created timestamp.
         /// </summary>
         public DateTime CreatedDate { get; set; }
 
         /// <summary>
-        /// Gets or sets the last modification date of the employee record.
+        /// Updated timestamp.
         /// </summary>
         public DateTime ModifiedDate { get; set; }
     }

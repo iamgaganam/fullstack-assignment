@@ -1,11 +1,11 @@
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// Register services.
 
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 
-// Add CORS
+// Configure CORS.
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend", policy =>
@@ -16,20 +16,20 @@ builder.Services.AddCors(options =>
     });
 });
 
-// Add Database Service
+// Database service.
 builder.Services.AddScoped<backend.Services.DatabaseService>();
 
-// Add Repository Services
+// Repository services.
 builder.Services.AddScoped<backend.Interfaces.IDepartmentRepository, backend.Data.Repositories.DepartmentRepository>();
 builder.Services.AddScoped<backend.Interfaces.IEmployeeRepository, backend.Data.Repositories.EmployeeRepository>();
 
-// Add Business Logic Services
+// Business services.
 builder.Services.AddScoped<backend.Interfaces.IDepartmentService, backend.Services.DepartmentService>();
 builder.Services.AddScoped<backend.Interfaces.IEmployeeService, backend.Services.EmployeeService>();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// Configure pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();

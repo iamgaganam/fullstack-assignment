@@ -17,7 +17,7 @@ namespace backend.Controllers
         }
 
         /// <summary>
-        /// Test database connection
+        /// Tests DB connection.
         /// </summary>
         [HttpGet("test-connection")]
         public async Task<IActionResult> TestConnection()
@@ -42,7 +42,7 @@ namespace backend.Controllers
         }
 
         /// <summary>
-        /// Get all tables in the database
+        /// Gets database tables.
         /// </summary>
         [HttpGet("get-tables")]
         public async Task<IActionResult> GetTables()
@@ -73,7 +73,7 @@ namespace backend.Controllers
         }
 
         /// <summary>
-        /// Get database information
+        /// Gets database info.
         /// </summary>
         [HttpGet("get-info")]
         public async Task<IActionResult> GetDatabaseInfo()

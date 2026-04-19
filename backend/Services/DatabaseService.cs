@@ -16,7 +16,7 @@ namespace backend.Services
         }
 
         /// <summary>
-        /// Tests the database connection
+        /// Tests DB connection.
         /// </summary>
         public async Task<bool> TestConnectionAsync()
         {
@@ -37,7 +37,7 @@ namespace backend.Services
         }
 
         /// <summary>
-        /// Executes a query and returns a DataTable
+        /// Runs a query and returns a table.
         /// </summary>
         public async Task<DataTable> ExecuteQueryAsync(string query)
         {
@@ -65,7 +65,7 @@ namespace backend.Services
         }
 
         /// <summary>
-        /// Executes a non-query command (INSERT, UPDATE, DELETE)
+        /// Runs INSERT, UPDATE, or DELETE.
         /// </summary>
         public async Task<int> ExecuteNonQueryAsync(string query)
         {
@@ -90,7 +90,7 @@ namespace backend.Services
         }
 
         /// <summary>
-        /// Executes a scalar query (returns single value)
+        /// Runs a scalar query.
         /// </summary>
         public async Task<object?> ExecuteScalarAsync(string query)
         {

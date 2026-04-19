@@ -41,17 +41,17 @@ namespace backend.Services
         {
             ValidateEmployee(employee);
 
-            // Check if department exists
+            // Validate department.
             var department = await _departmentRepository.GetDepartmentByIdAsync(employee.DepartmentId);
             if (department == null)
                 throw new InvalidOperationException($"Department with ID {employee.DepartmentId} does not exist");
 
-            // Check if email already exists
+            // Enforce unique email.
             var existing = await _employeeRepository.GetEmployeeByEmailAsync(employee.EmailAddress);
             if (existing != null)
                 throw new InvalidOperationException($"Email '{employee.EmailAddress}' already exists");
 
-            // Calculate age
+            // Set derived age.
             employee.Age = CalculateAge(employee.DateOfBirth);
 
             return await _employeeRepository.AddEmployeeAsync(employee);
@@ -64,17 +64,17 @@ namespace backend.Services
             if (employee.EmployeeId <= 0)
                 throw new ArgumentException("Employee ID must be greater than 0");
 
-            // Check if department exists
+            // Validate department.
             var department = await _departmentRepository.GetDepartmentByIdAsync(employee.DepartmentId);
             if (department == null)
                 throw new InvalidOperationException($"Department with ID {employee.DepartmentId} does not exist");
 
-            // Check if new email already exists for another employee
+            // Enforce unique email.
             var existing = await _employeeRepository.GetEmployeeByEmailAsync(employee.EmailAddress);
             if (existing != null && existing.EmployeeId != employee.EmployeeId)
                 throw new InvalidOperationException($"Email '{employee.EmailAddress}' already exists");
 
-            // Calculate age
+            // Set derived age.
             employee.Age = CalculateAge(employee.DateOfBirth);
 
             return await _employeeRepository.UpdateEmployeeAsync(employee);

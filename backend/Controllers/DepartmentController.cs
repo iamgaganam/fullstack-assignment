@@ -5,8 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace backend.Controllers
 {
     /// <summary>
-    /// API controller for managing department operations.
-    /// Provides endpoints for CRUD operations on departments.
+    /// Department API endpoints.
     /// </summary>
     [ApiController]
     [Route("api/[controller]")]
@@ -16,10 +15,8 @@ namespace backend.Controllers
         private readonly ILogger<DepartmentController> _logger;
 
         /// <summary>
-        /// Initializes a new instance of the DepartmentController.
+        /// Creates a DepartmentController.
         /// </summary>
-        /// <param name="departmentService">The department service for business logic.</param>
-        /// <param name="logger">The logger for logging operations.</param>
         public DepartmentController(backend.Interfaces.IDepartmentService departmentService, ILogger<DepartmentController> logger)
         {
             _departmentService = departmentService;
@@ -27,11 +24,8 @@ namespace backend.Controllers
         }
 
         /// <summary>
-        /// Retrieves all departments from the database.
+        /// Gets all departments.
         /// </summary>
-        /// <returns>A list of all departments.</returns>
-        /// <response code="200">Returns the list of departments.</response>
-        /// <response code="500">If there is a server error retrieving departments.</response>
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Department>>> GetAllDepartments()
         {
@@ -49,13 +43,8 @@ namespace backend.Controllers
 
         [HttpGet("{id}")]
         /// <summary>
-        /// Retrieves a department by their ID.
+        /// Gets a department by ID.
         /// </summary>
-        /// <param name="id">The unique identifier of the department.</param>
-        /// <returns>The department with the specified ID.</returns>
-        /// <response code="200">Returns the department if found.</response>
-        /// <response code="404">If the department is not found.</response>
-        /// <response code="500">If there is a server error retrieving the department.</response>
         public async Task<ActionResult<Department>> GetDepartmentById(int id)
         {
             try
@@ -75,14 +64,8 @@ namespace backend.Controllers
 
         [HttpPost]
         /// <summary>
-        /// Creates a new department.
+        /// Creates a department.
         /// </summary>
-        /// <param name="department">The department data to create.</param>
-        /// <returns>The ID of the newly created department.</returns>
-        /// <response code="201">Returns the newly created department ID.</response>
-        /// <response code="400">If the department data is invalid.</response>
-        /// <response code="409">If a department with the same code already exists.</response>
-        /// <response code="500">If there is a server error creating the department.</response>
         public async Task<ActionResult<int>> CreateDepartment([FromBody] Department department)
         {
             try
@@ -112,16 +95,8 @@ namespace backend.Controllers
 
         [HttpPut("{id}")]
         /// <summary>
-        /// Updates an existing department.
+        /// Updates a department.
         /// </summary>
-        /// <param name="id">The unique identifier of the department to update.</param>
-        /// <param name="department">The updated department data.</param>
-        /// <returns>No content if successful.</returns>
-        /// <response code="204">If the department was successfully updated.</response>
-        /// <response code="400">If the department data is invalid or ID mismatch.</response>
-        /// <response code="404">If the department is not found.</response>
-        /// <response code="409">If the update conflicts with existing data.</response>
-        /// <response code="500">If there is a server error updating the department.</response>
         public async Task<ActionResult> UpdateDepartment(int id, [FromBody] Department department)
         {
             try
@@ -157,13 +132,8 @@ namespace backend.Controllers
 
         [HttpDelete("{id}")]
         /// <summary>
-        /// Deletes a department by their ID.
+        /// Deletes a department.
         /// </summary>
-        /// <param name="id">The unique identifier of the department to delete.</param>
-        /// <returns>No content if successful.</returns>
-        /// <response code="204">If the department was successfully deleted.</response>
-        /// <response code="404">If the department is not found.</response>
-        /// <response code="500">If there is a server error deleting the department.</response>
         public async Task<ActionResult> DeleteDepartment(int id)
         {
             try

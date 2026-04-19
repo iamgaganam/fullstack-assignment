@@ -5,8 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace backend.Controllers
 {
     /// <summary>
-    /// API controller for managing employee operations.
-    /// Provides endpoints for CRUD operations on employees.
+    /// Employee API endpoints.
     /// </summary>
     [ApiController]
     [Route("api/[controller]")]
@@ -16,10 +15,8 @@ namespace backend.Controllers
         private readonly ILogger<EmployeeController> _logger;
 
         /// <summary>
-        /// Initializes a new instance of the EmployeeController.
+        /// Creates an EmployeeController.
         /// </summary>
-        /// <param name="employeeService">The employee service for business logic.</param>
-        /// <param name="logger">The logger for logging operations.</param>
         public EmployeeController(backend.Interfaces.IEmployeeService employeeService, ILogger<EmployeeController> logger)
         {
             _employeeService = employeeService;
@@ -27,11 +24,8 @@ namespace backend.Controllers
         }
 
         /// <summary>
-        /// Retrieves all employees from the database.
+        /// Gets all employees.
         /// </summary>
-        /// <returns>A list of all employees.</returns>
-        /// <response code="200">Returns the list of employees.</response>
-        /// <response code="500">If there is a server error retrieving employees.</response>
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Employee>>> GetAllEmployees()
         {
@@ -49,13 +43,8 @@ namespace backend.Controllers
 
         [HttpGet("{id}")]
         /// <summary>
-        /// Retrieves an employee by their ID.
+        /// Gets an employee by ID.
         /// </summary>
-        /// <param name="id">The unique identifier of the employee.</param>
-        /// <returns>The employee with the specified ID.</returns>
-        /// <response code="200">Returns the employee if found.</response>
-        /// <response code="404">If the employee is not found.</response>
-        /// <response code="500">If there is a server error retrieving the employee.</response>
         public async Task<ActionResult<Employee>> GetEmployeeById(int id)
         {
             try
@@ -75,12 +64,8 @@ namespace backend.Controllers
 
         [HttpGet("department/{departmentId}")]
         /// <summary>
-        /// Retrieves all employees belonging to a specific department.
+        /// Gets employees by department.
         /// </summary>
-        /// <param name="departmentId">The unique identifier of the department.</param>
-        /// <returns>A list of employees in the specified department.</returns>
-        /// <response code="200">Returns the list of employees in the department.</response>
-        /// <response code="500">If there is a server error retrieving the employees.</response>
         public async Task<ActionResult<IEnumerable<Employee>>> GetEmployeesByDepartment(int departmentId)
         {
             try
@@ -97,14 +82,8 @@ namespace backend.Controllers
 
         [HttpPost]
         /// <summary>
-        /// Creates a new employee.
+        /// Creates an employee.
         /// </summary>
-        /// <param name="employee">The employee data to create.</param>
-        /// <returns>The ID of the newly created employee.</returns>
-        /// <response code="201">Returns the newly created employee ID.</response>
-        /// <response code="400">If the employee data is invalid or validation fails.</response>
-        /// <response code="409">If the employee already exists or department doesn't exist.</response>
-        /// <response code="500">If there is a server error creating the employee.</response>
         public async Task<ActionResult<int>> CreateEmployee([FromBody] Employee employee)
         {
             try
@@ -134,16 +113,8 @@ namespace backend.Controllers
 
         [HttpPut("{id}")]
         /// <summary>
-        /// Updates an existing employee.
+        /// Updates an employee.
         /// </summary>
-        /// <param name="id">The unique identifier of the employee to update.</param>
-        /// <param name="employee">The updated employee data.</param>
-        /// <returns>No content if successful.</returns>
-        /// <response code="204">If the employee was successfully updated.</response>
-        /// <response code="400">If the employee data is invalid or ID mismatch.</response>
-        /// <response code="404">If the employee is not found.</response>
-        /// <response code="409">If the update conflicts with existing data.</response>
-        /// <response code="500">If there is a server error updating the employee.</response>
         public async Task<ActionResult> UpdateEmployee(int id, [FromBody] Employee employee)
         {
             try
@@ -179,13 +150,8 @@ namespace backend.Controllers
 
         [HttpDelete("{id}")]
         /// <summary>
-        /// Deletes an employee by their ID.
+        /// Deletes an employee.
         /// </summary>
-        /// <param name="id">The unique identifier of the employee to delete.</param>
-        /// <returns>No content if successful.</returns>
-        /// <response code="204">If the employee was successfully deleted.</response>
-        /// <response code="404">If the employee is not found.</response>
-        /// <response code="500">If there is a server error deleting the employee.</response>
         public async Task<ActionResult> DeleteEmployee(int id)
         {
             try
